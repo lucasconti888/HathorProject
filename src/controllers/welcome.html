@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html>
+
+
   <head>
     <meta charset="UTF-8">
     <title>Welcome to Hathor Wallet API!</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
-  <body>
-    <h1>Welcome to Hathor Wallet API!</h1>
-    <p>See the <a href="docs/">docs</a></p>
 
+
+  <body>
 
     <script>
+        
 
 function startWallet() {
     axios.post('http://localhost:8000/start', {
         'wallet-id': 'w1',
-        'seedKey': 'default',
+        'seedKey': 'seedKey',
     }).then(response => {
         console.log(JSON.stringify(response.data));
     });
@@ -30,10 +32,29 @@ function getAddresses() {
         console.log(JSON.stringify(response.data));
     });
 }
+
+function createToken() {
+    axios.post(
+        'http://localhost:8000/wallet/create-token', 
+        {
+            "name": "Test Coin",
+            "symbol": "TSC", 
+            "amount": 100,
+        },
+        {
+            headers: {
+                'x-wallet-id': ''
+            }
+        }
+    ).then(response => {
+        console.log(JSON.stringify(response.data))
+    });
+}
+
     </script>
 
     <button onClick="startWallet()">startWallet</button>
-    <button onClick="getAddresses()">getAddresses</button>
+    <!-- <button onClick="getAddresses()">getAddresses</button> -->
 
   </body>
 </html>
