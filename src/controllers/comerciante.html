@@ -69,19 +69,14 @@ function createToken() {
     });
 }
 
-window.onload = function() {
-    var myButton = document.getElementById('myButton');
-    if (myButton) {
-      myButton.addEventListener('click', function() {
-        window.location.href = '/comerciante.html';
-      });
-    }
-  };
-
     </script>
     
     <div class="botao">
-        <button id="myButton" onClick="startWallet()" class="estilo-botao">startWallet</button>
+
+        <button onClick="startWallet()" class="estilo-botao">StartWallet</button>
+        <button onClick="createToken()" class="estilo-botao">CreateToken</button>
+
+    
     </div>
 
   </body>
