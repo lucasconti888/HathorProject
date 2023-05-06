@@ -1,0 +1,133 @@
+import yargs from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
+
+const argv = yargs(hideBin(process.argv)).argv;
+
+function getParam(name, _default) {
+  const envname = 'HEADLESS_' + name.toUpperCase();
+  return argv[name] || process.env[envname] || _default;
+}
+
+function getIntParam(name, _default) {
+  const param = getParam(name, _default);
+
+  if (param === undefined || param === null) {
+    return param;
+  }
+
+  const parsedParam = parseInt(param);
+  if (Number.isInteger(parsedParam)) {
+    if (parsedParam != param) {
+      // parseInt('123a') = 123, then it would enter this if
+      // it means that we have a bad integer, even though parseInt returns a valid one
+      throw new Error(`Invalid integer parameter for ${name}. Received ${param}.`);
+    }
+    return parsedParam;
+  }
+
+  throw new Error(`Invalid integer parameter for ${name}. Received ${param}.`);
+}
+
+function getBooleanParam(name, _default) {
+  const param = getParam(name, _default);
+
+  if (param === undefined || param === null) {
+    return param;
+  }
+
+  if (param === 'true' || param === '1') {
+    // Should we allow more representations?
+    return true;
+  } else if (param === 'false' || param === '0') {
+    // Should we allow more representations?
+    return false;
+  }
+
+  throw new Error(`Invalid boolean parameter for ${name}. Received ${param}.`);
+}
+
+const config = {
+  // HTTP API Settings
+  http_bind_address: getParam('http_bind', '0.0.0.0'),
+  http_port: parseInt(getParam('http_port', '8000')),
+
+  // Hathor Full-node
+  network: getParam('network', 'mainnet'),
+  server: getParam('server', 'https://node1.mainnet.hathor.network/v1a/'),
+
+  txMiningUrl: getParam('tx_mining_url', null),
+  txMiningApiKey: getParam('tx_mining_api_key', null),
+
+  http_api_key: getParam('api_key'),
+  httpLogFormat: getParam('http_log_format'),
+
+  // Wallet seeds
+  seeds: {},
+
+  // Wallet multisig configuration
+  multisig: {},
+
+  consoleLevel: getParam('console_level', 'info'),
+  logging: {},
+  tokenUid: getParam('token_uid'),
+  gapLimit: getIntParam('gap_limit'),
+  connectionTimeout: getIntParam('connection_timeout'),
+  allowPassphrase: getBooleanParam('allow_passphrase'),
+  confirmFirstAddress: getBooleanParam('confirm_first_address'),
+
+  // Plugin configuration
+  enabled_plugins: getParam('enabled_plugins', '').split(' ').filter(x => x),
+  plugin_config: {},
+};
+
+const seeds = getParam('seeds', 'default').split(' ');
+for (const x of seeds) {
+  config.seeds[x] = getParam(`seed_${x}`);
+  if (!config.seeds[x]) {
+    throw `Missing parameter --seed_${x} or envvar HEADLESS_SEED_${x.toUpperCase()}`;
+  }
+
+  // Multisig configuration and validation
+  const multisigPubkeys = getParam(`multisig_seed_${x}_pubkeys`);
+  const multisig = {
+    total:          getParam(`multisig_seed_${x}_max_signatures`),
+    numSignatures:  getParam(`multisig_seed_${x}_num_signatures`),
+  };
+  if (!(multisigPubkeys || multisig.total || multisig.numSignatures)) {
+    // No multisig parameters means this is not a multisig.
+    continue;
+  }
+  if (!(multisigPubkeys && multisig.total && multisig.numSignatures)) {
+    // If this is a multisig seed, all multisig parameters should be present
+    throw `Multisig improperly configured, need all of [--multisig_seed_${x}_max_signatures, --multisig_seed_${x}_num_signatures, --multisig_seed_${x}_pubkeys] or envvars [HEADLESS_MULTISIG_SEED_${x.toUpperCase()}_MAX_SIGNATURES, HEADLESS_MULTISIG_SEED_${x.toUpperCase()}_NUM_SIGNATURES, HEADLESS_MULTISIG_SEED_${x.toUpperCase()}_PUBKEYS, ]`
+  }
+  multisig.pubkeys = multisigPubkeys.split(' ');
+  if (multisig.pubkeys.length != multisig.total) {
+    throw `Multisig pubkeys for seed ${x} does not match max signatures`;
+  }
+  config.multisig[x] = multisig;
+}
+
+// Configuration for custom plugins
+for (const pluginId of config.enabled_plugins) {
+  const pluginFile = getParam(`plugin_${pluginId}_file`);
+
+  if (!pluginFile) {
+    continue;
+  }
+
+  config.plugin_config[pluginId] = {
+    name: pluginId,
+    file: pluginFile,
+  };
+}
+
+const debugPath = getParam('debug');
+if (debugPath) {
+  config.logging.debug = {
+    filename: debugPath,
+    level: 'debug',
+  };
+}
+
+module.exports = config;

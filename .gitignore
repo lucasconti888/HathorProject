@@ -1,0 +1,11 @@
+*.swp
+
+config.js
+
+node_modules/
+__pycache__/
+
+coverage
+coverage-integration
+
+.DS_Store
