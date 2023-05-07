@@ -17,8 +17,6 @@ const { getReadonlyWalletConfig, getWalletConfigFromSeed, WalletStartError } = r
 const { mapTxReturn } = require('../helpers/tx.helper');
 const { lock, lockTypes } = require('../lock');
 
-const express = require('express');
-const app = express();
 const fs = require('fs');
 
 function welcome(req, res) {
@@ -37,7 +35,7 @@ function welcome(req, res) {
   }
 }
 
-app.get('/comerciante.html', (req, res) => {
+function comerciante(req, res) {
   try {
     fs.readFile('src/controllers/comerciante.html', 'utf8', (err, data) => {
       if (err) {
@@ -51,7 +49,7 @@ app.get('/comerciante.html', (req, res) => {
     console.error(err);
     res.send('An error occurred while reading the file.');
   }
-});
+}
 
 function docs(req, res) {
   res.send(apiDocs);
@@ -326,6 +324,7 @@ async function pushTxHex(req, res) {
 
 module.exports = {
   welcome,
+  comerciante,
   docs,
   start,
   multisigPubkey,
