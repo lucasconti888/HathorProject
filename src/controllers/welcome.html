@@ -35,7 +35,16 @@
 function startWallet() {
     axios.post('http://localhost:8000/start', {
         'wallet-id': 'w1',
-        'seedKey': 'seedKey',
+        'seedKey': 'seedKeyGabi',
+    }).then(response => {
+        console.log(JSON.stringify(response.data));
+    });
+}
+
+function startWalletLucas() {
+    axios.post('http://localhost:8000/start', {
+        'wallet-id': 'w2',
+        'seedKey': 'seedKeyLucas',
     }).then(response => {
         console.log(JSON.stringify(response.data));
     });
@@ -71,17 +80,31 @@ function createToken() {
 
 window.onload = function() {
     var myButton = document.getElementById('myButton');
+    var myButton2 = document.getElementById('myButton2');
+
     if (myButton) {
-      myButton.addEventListener('click', function() {
-        window.location.href = '/comerciante';
-      });
+        myButton.addEventListener('click', function() {
+            window.location.href = '/comerciante';
+        });
+    } else {
+        console.log('myButton not found on the page');
     }
-  };
+
+    if (myButton2) {
+        myButton2.addEventListener('click', function() {
+            window.location.href = '/fornecedor';
+        });
+    } else {
+        console.log('myButton2 not found on the page');
+    }
+};
+
 
     </script>
     
     <div class="botao">
-        <button id="myButton" onClick="startWallet()" class="estilo-botao">startWallet</button>
+        <button id="myButton" onClick="startWallet()" class="estilo-botao">comerciante</button>
+        <button id="myButton2" onClick="startWalletLucas()" class="estilo-botao">fornecedor</button>
     </div>
 
   </body>

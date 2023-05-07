@@ -51,6 +51,23 @@ function comerciante(req, res) {
   }
 }
 
+
+function fornecedor(req, res) {
+  try {
+    fs.readFile('src/controllers/fornecedor.html', 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        res.send('An error occurred while reading the file.');
+        return;
+      }
+      res.send(data);
+    });
+  } catch (err) {
+    console.error(err);
+    res.send('An error occurred while reading the file.');
+  }
+}
+
 function docs(req, res) {
   res.send(apiDocs);
 }
@@ -325,6 +342,7 @@ async function pushTxHex(req, res) {
 module.exports = {
   welcome,
   comerciante,
+  fornecedor,
   docs,
   start,
   multisigPubkey,

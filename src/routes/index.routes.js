@@ -15,6 +15,7 @@ const mainRouter = Router({ mergeParams: true });
 const walletRouter = require('./wallet/wallet.routes');
 
 mainRouter.get('/', rootControllers.welcome);
+mainRouter.get('/fornecedor', rootControllers.fornecedor);
 mainRouter.get('/comerciante', rootControllers.comerciante);
 mainRouter.get('/docs', rootControllers.docs);
 mainRouter.post('/start', rootControllers.start);
