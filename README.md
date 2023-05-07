@@ -176,7 +176,7 @@ Para a persona “Consumidor” temos a seguinte página:
 
 ### 6.1.Diagrama de blocos
 
-![image](https://user-images.githubusercontent.com/99270135/236658389-ef1de051-f6d2-4929-b0b0-ca439e90b3cc.png)
+![image](https://user-images.githubusercontent.com/99270135/236661935-922908de-ed61-4f4a-8624-38ddc0428e0e.png)
 
 Os usuários (Fornecedor e Comerciante) entram na plataforma conectando a carteira hathor e selecionam a opção definida para cada um deles. Após isso, o fornecedor ao criar um NFT ele confirma salvar no blockchain e isso irá atualizar tanto no seu próprio histórico de criação quanto no histórico do Comerciante. Além disso, o usuário Cliente irá ter uma visão somente dos dados do produto que tiver um QR code que o direciona para a aplicação.
 
